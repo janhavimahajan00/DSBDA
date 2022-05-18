@@ -1,0 +1,155 @@
+ASS 1:  to import locate load data preprocessing data formalating                                                                   
+import pandas as pd
+import numpy as np
+df = pd.read_csv("train.csv")
+df.shape
+df.columns
+df.size
+df.dtypes
+df.isnull().sum()
+df.describe()
+df.info()
+df["Cabin"] = df["Cabin"].replace(to_replace=np.nan, value="unknown") 
+df["Age"] = df["Age"].interpolate() 
+df["Embarked"].fillna(method="ffill",inplace=True)
+df.isnull().sum()
+df["Age"] = df["Age"].astype('int64')
+quantitative_data = pd.get_dummies(df.Embarked,prefix = 'Embarked')
+df = df.join(quantitative_data) 
+df.drop(['Embarked'],axis = 1,inplace = True)
+quantitative_sex = pd.get_dummies(df.Sex,prefix = 'Sex')
+df = df.join(quantitative_sex)df.drop(['Sex'],axis = 1,inplace = True) 
+
+ASS 2:scan all varibles find outlines and apply transforemation
+df['club_join_date'] = df['club_join_date'].replace(to_replace=np.nan,value='2019')
+df['placement_offer_count']=df['placement_offer_count'].fillna('1')
+columns = ['math_score','reading_score','writing_score','placement_score'] 
+df.boxplot(columns)
+np.where(df['math_score'] < 60)
+np.where(((df['placement_score'] > 75) & (df['placement_score'] <= 85))
+& ((df['placement_offer_count'] > 2) | (df['placement_offer_count'] < 2) ))
+df[(df['math_score'] < 60) | (df['math_score'] > 80)]
+from sklearn.preprocessing import MinMaxScaler 
+scaling = MinMaxScaler()
+scaling.fit_transform(new_df2[['math_score','reading_score','writing_score','placement_score']])
+df.drop(columns = 'Id', inplace = True)
+
+ASS 3:to find the measures of central tendency
+np.mean(df['SepalLengthCm'])
+np.std(df)
+np.min(df)
+df.quantile(0.25)
+
+ASS 4:create a linear regression model 
+from sklearn.datasets import load_boston 
+boston = load_boston()
+print(boston)
+import pandas as pd
+import numpy as np
+from sklearn import linear_model
+from sklearn.model_selection import train_test_split
+df_x = pd.DataFrame(boston.data, columns=boston.feature_names)
+df_y = pd.DataFrame(boston.target)
+reg = linear_model.LinearRegression()
+x_train, x_test, y_train, y_test = train_test_split(df_x, df_y, test_size=0.3, random_state=42)
+reg.fit(x_train, y_train)
+print(reg.coef_)
+y_pred = reg.predict(x_test) 
+print(y_pred)
+print(np.mean((y_pred-y_test)**2))
+from sklearn.metrics import mean_squared_error 
+print(mean_squared_error(y_test,y_pred))
+
+ASS 5:implement logistic regression 
+import pandas as pd 
+import numpy as np 
+import matplotlib.pyplot as plt 
+%matplotlib inline
+import seaborn as sns
+x = df.iloc[:, [2, 3]].values x
+y = df.iloc[:, 4].values y
+from sklearn.model_selection import train_test_split x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.25, random_state = 0)
+x_train
+x_train.shape
+y_train
+y_train.shape
+x_test
+x_test.shape
+y_test
+y_test.shape
+from sklearn.preprocessing import StandardScaler sc_x = StandardScaler() x_train = sc_x.fit_transform(x_train) x_test = sc_x.fit_transform(x_test)
+from sklearn.linear_model import LogisticRegression classifier = LogisticRegression(random_state = 0) classifier.fit(x_train, y_train
+y_pred = classifier.predict(x_test)
+y_pred
+y_test
+from sklearn.metrics import confusion_matrix cm = confusion_matrix(y_test, y_pred) cm
+from sklearn.metrics import accuracy_score accuracy = accuracy_score(y_test, y_pred) * 100 accuracy
+tp = cm[0,[0]] print('True Positive : ',tp)
+fp = cm[0, [1]] print('False Positive : ',fp)
+fn = cm[1, [0]] print('False Negative : ',fn)
+tn = cm[1, [1]] print('True Negative : ',tn)
+accuracy_cm = ((tp + tn)/(tp + fp + fn + tn)) print('Accuracy : ',accuracy_cm*100)
+error_rate_cm = ((fp + fn)/(tp + fp + fn + tn)) print('Error Rate : ', error_rate_cm*100)
+precision_cm = (tp / (tp + fp)) print('Precision : ',precision_cm*100)
+recall_cm = (tp / (tp + fn)) print('Sensitivity : ', recall_cm*100)
+specificity_cm = (tn / (tn + fp)) print('Specificity : ', specificity_cm*100)
+
+Ass 6:to implimate simple matrix and buyers classifications
+sns.relplot(data = df, x = 'SepalWidthCm', y = 'SepalLengthCm', hue = 'Species', style = 'Species')
+sns.relplot(data = df, x = 'PetalLengthCm', y = 'PetalWidthCm', hue = 'Species', style = 'Species')
+sns.pairplot(df, hue = 'Species')
+plt.figure(figsize = (15, 10)) plt.subplot(2, 2, 1) sns.boxplot(data = df, x = 'Species', y = 'PetalLengthCm') plt.subplot(2, 2, 2) sns.boxplot(data = df, x = 'Species', y = 'PetalWidthCm') plt.subplot(2, 2, 3) sns.boxplot(data = df, x = 'Species', y = 'SepalLengthCm') plt.subplot(2, 2, 4) sns.boxplot(data = df, x = 'Species', y = 'SepalWidthCm')
+sns.boxplot(data = df).set_title("Distribution of Sepal-Length, Sepal-Width, Petal-Length and Petal-Width for iris-setos
+df.corr()
+plt.subplots(figsize = (8,8)) sns.heatmap(df.corr(), annot = True, fmt = "f").set_title("Corelation of attributes")
+x = df.iloc[:, 0:4].values x
+y = df.iloc[:, 4].values y
+from sklearn.preprocessing import LabelEncoder le = LabelEncoder() y = le.fit_transform(y) y
+from sklearn.model_selection import train_test_split x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.3, random_state = 0)
+from sklearn.naive_bayes import GaussianNB model = GaussianNB() model.fit(x_train, y_train)
+
+Ass8:to check the price of tickit using histogram
+import seaborn as sns sns.distplot(df['Pclass'])
+sns.distplot(df['Age'])
+sns.distplot(df['Age'], bins=40)
+sns.distplot(df['Age'], bins=20, kde=False, rug=True)
+
+sns.jointplot(x = df['Age'], y = df['Fare'], kind = 'scatter')
+sns.jointplot(x = df['Age'], y = df['Fare'], kind = 'hex')
+sns.pairplot(df)
+sns.barplot(x = df['Sex'], y = df['Fare'])
+sns.countplot(df['Pclass'])
+sns.distplot(df['Fare'], hist = True)
+
+Ass9:about titanic statstics
+sns.countplot(df['Sex'])
+sns.countplot(df['Survived'])
+df['Sex'].value_counts().plot(kind = 'pie', autopct = '%.2f')
+df['Survived'].value_counts().plot(kind = 'pie', autopct = '%.2f')
+sns.barplot(df['Survived'], df['Age'])
+sns.barplot(df['Sex'], df['Survived'])
+sns.barplot(df['Sex'],df['Age'], hue = df['Survived'])
+sns.boxplot(df['Sex'], df['Age'])
+sns.boxplot(df['Sex'], df['Age'], df['Survived'])
+pd.crosstab(df['Sex'], df['Survived'])
+pd.crosstab(df['Age'], df['Survived'])
+sns.heatmap(pd.crosstab(df['Sex'], df['Survived']))
+sns.heatmap(pd.crosstab(df['Age'], df['Survived']))
+sns.clustermap(pd.crosstab(df['Sex'], df['Survived']))b
+sns.clustermap(pd.crosstab(df['Age'], df['Survived']))
+
+Ass11:hadoop
+package org.myorg; import java.io.IOException; import java.util.*; import org.apache.hadoop.fs.Path; import org.apache.hadoop.conf.*; import org.apache.hadoop.io.*; import org.apache.hadoop.mapreduce.*; import org.apache.hadoop.mapreduce.lib.input.FileInputFormat; import org.apache.hadoop.mapreduce.lib.input.TextInputFormat; import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat; import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat; public class WordCount { public static class Map extends Mapper { private final static IntWritable one = new IntWritable(1); private Text word = new Text(); public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException { String line = value.toString(); StringTokenizer tokenizer = new StringTokenizer(line); while (tokenizer.hasMoreTokens()) { word.set(tokenizer.nextToken()); context.write(word, one); } } } public static class Reduce extends Reducer { public void reduce(Text key, Iterable values, Context context) throws IOException, InterruptedException { int sum = 0; for (IntWritable val : values) { sum += val.get(); } context.write(key, new IntWritable(sum)); } } $ bin/hadoop com.sun.tools.javac.Main WordCount.java $ jar cf wc.jar WordCount*.class $ bin/hadoop fs -ls /user/wordcount/input/ /user/wordcount/input/file01 /user/wordcount/input/file02 public static void main(String[] args) throws Exception { Configuration conf = new Configuration(); Job job = new Job(conf, "wordcount"); job.setOutputKeyClass(Text.class); job.setOutputValueClass(IntWritable.class); job.setMapperClass(Map.class); job.setReducerClass(Reduce.class); job.setInputFormatClass(TextInputFormat.class); job.setOutputFormatClass(TextOutputFormat.class); FileInputFormat.addInputPath(job, new Path(args[0])); FileOutputFormat.setOutputPath(job, new Path(args[1])); job.waitForCompletion(true); }
+
+
+
+
+
+
+
+
+
+
+
+	
+
